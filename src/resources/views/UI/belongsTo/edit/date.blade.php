@@ -1,0 +1,1 @@
+<input type="text" name="{{$column->getName()}}" class="{{$column->getClass()}}" value="{{$quickdata->getValue($column['name'],$data)}}">

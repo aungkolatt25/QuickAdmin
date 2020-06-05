@@ -1,0 +1,1 @@
+<input type="{{$column->getType()}}" name="{{$column->getName()}}" class="{{$column->getClass()}}">

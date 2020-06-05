@@ -1,0 +1,1 @@
+@extends("quick::UI.normal.list.general")

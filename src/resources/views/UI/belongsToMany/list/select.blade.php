@@ -1,0 +1,1 @@
+@extends("quick.list.general")

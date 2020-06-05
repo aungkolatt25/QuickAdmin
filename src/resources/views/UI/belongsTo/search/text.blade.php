@@ -1,0 +1,1 @@
+<input type="text" name="{{$column->getName()}}" value="{{ request()->get($column->getName()) }}">

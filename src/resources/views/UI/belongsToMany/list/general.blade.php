@@ -1,0 +1,1 @@
+{{ $quickdata->getValue($column->name, $data) }}

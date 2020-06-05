@@ -1,0 +1,33 @@
+{
+    "name": "quickframe/quickadmin",
+    "type": "library",
+    "description": "Admin Package",
+    "keywords": ["Admin","CRUD"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aung Ko Latt",
+            "email": "aungkolatt2504@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.2.5",
+	    "laravel/framework": "^7.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Quick\\Providers\\QuickProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Quick\\": "src/"
+        },
+	"files": [
+            "src/Quick/Helper.php"
+        ]
+    }
+}
