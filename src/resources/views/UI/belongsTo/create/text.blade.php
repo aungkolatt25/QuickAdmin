@@ -1,1 +1,1 @@
-<input type="text" name="{{$column->getName()}}" class="{{$column->getClass()}}">
+@include("quick::UI.normal.create.general")

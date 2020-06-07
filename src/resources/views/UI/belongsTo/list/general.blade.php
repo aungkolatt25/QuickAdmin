@@ -1,1 +1,1 @@
-{{ $quickdata->getValue($column->name, $data) }}
+{{ $quickdata->getValue($column->name, compact("data")) }}

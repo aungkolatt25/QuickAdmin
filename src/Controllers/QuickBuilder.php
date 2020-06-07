@@ -81,8 +81,14 @@ class QuickBuilder extends \App\Http\Controllers\Controller
     {
         //$builder = $this->getListData($request);
         $quickdata = $this->quickdata;
+        $data = $this->model;
+        foreach($quickdata->getRelations() as $relation){
+            if($relation->type == "belongsTo"){
+                $data->{$relation->foreignKey} = request()->get($relation->foreignKey);
+            }
+        }
         //$datas = $quickdata->isPaginate()?$builder->paginate():$builder->get();
-        return view("quick::general.create", compact( "quickdata"));
+        return view("quick::general.create", compact( "quickdata","data"));
     }
 
     /**
@@ -98,14 +104,16 @@ class QuickBuilder extends \App\Http\Controllers\Controller
         //Child Relation
         $columns = $this->quickdata->getVisibleColumns("create");
         foreach($columns as $column){
-            if($column->isRelationType() && $column->getRelation()->type != "belongsTo")
+            if(
+                $column->isRelationType() && 
+                ( $column->getRelation()->type == "belongsTo" || $column->getRelation()->type == "belongsToMany")
+            )
                 continue;
             if(Arr::get($column->options??[],"relatedDatas", false))
                 continue;
             $requestValue = $column->getValueAccessable();
             $this->model->{$column->getName()} = $requestValue;
         }
-        
         DB::beginTransaction();
         try{
             $this->beforeSave($this->model);
@@ -170,23 +178,24 @@ class QuickBuilder extends \App\Http\Controllers\Controller
         }*/
     }
 
-    public function saveLogicRelated($model, $relationObj, $relationdata){
+    public function saveLogicRelated($relationObj, $model, $relationdata){
         $relationObj->save($model, $relationdata);
     }
 
-    public function beforeSave(&$model){
+    public function beforeSave($model){
+        return $model;
     }
 
-    public function afterSave(&$model){
-
+    public function afterSave($model){
+        return $model;
     }
 
-    public function beforeSaveRelated(&$model, $relation){
-
+    public function beforeSaveRelated($model, $relation){
+        return $model;
     }
 
-    public function afterSaveRelated(&$model, $relation){
-
+    public function afterSaveRelated($model, $relation){
+        return $model;
     }
 
     /**
@@ -227,7 +236,12 @@ class QuickBuilder extends \App\Http\Controllers\Controller
         $columns = $this->quickdata->getVisibleColumns("edit");
         $model = $this->model->find($id);
         foreach($columns as $column){
-            $model->{$column->getName()} = $column->getValueAccessable();
+            if($column->isRelationType() && $column->getRelation()->type == "belongsTo")
+                continue;
+            if(Arr::get($column->options??[],"relatedDatas", false))
+                continue;
+            $requestValue = $column->getValueAccessable();
+            $model->{$column->getRname()} = $requestValue;
         }
         $model->save();
         return redirect(qurl($this->quickdata->file));

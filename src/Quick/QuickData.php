@@ -105,6 +105,11 @@ class QuickData
         return $relation;
     }
 
+    public function getRelations(){
+        $relation = collect($this->data["relations"]??[]);
+        return $relation;
+    }
+
     public function hasRelation($relationid){
         $relation = collect($this->data["relations"])->first(function($relation) use($relationid){
             return $relation->id == $relationid;

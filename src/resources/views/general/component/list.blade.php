@@ -35,11 +35,11 @@
                 <div class="item-col fixed pull-left item-col-title">
                 </div>
                 @foreach($quickdata->getVisibleColumns("list") as $column)
-                    <div class="item-col fixed pull-left item-col-owner">
+                    <div class="item-col fixed pull-left item-col-owner display-{{$column->type}}">
                         <div class="item-heading">{{qt($column->displayName)}}</div>
                         <div>
                             <h4 class="item-title">
-                                {{ $column->getUI("list", $data) }}
+                                {{ $column->getUI("list", compact("data")) }}
                             </h4>
                         </div>
                     </div>

@@ -8,7 +8,7 @@
                 </h3>
     </div>
     <div class="card card-block">
-        {{QuickComponent($quickdata, "create")}}
+        {{QuickComponent($quickdata, "create", compact("data"))}}
         <div class="form-group row">
             <div class="col-sm-10 col-sm-offset-2">
                 <input type="submit" value="Submit" lass="btn btn-primary">

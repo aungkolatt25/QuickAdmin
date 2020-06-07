@@ -6,7 +6,7 @@
         @slot("input")
             @component(config("quick.template.form"))
                 @slot("input")
-                    {{$column->getUI("edit", $data)}}
+                    {{$column->getUI("edit", compact("data"))}}
                 @endslot
             @endcomponent
         @endslot

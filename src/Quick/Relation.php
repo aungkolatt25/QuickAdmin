@@ -33,7 +33,11 @@ class Relation implements \ArrayAccess{
                 $model->relation($this->id)->associate($mix);
                 break;
             case "belongsToMany":
-                $model->relation($this->id)->sync($mix);
+                $model->relation($this->id)->sync(
+                    collect($mix)->map(function($value){
+                        return $value->getKey();
+                    })->values()
+                );
                 break;
         }
     }

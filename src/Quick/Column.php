@@ -41,7 +41,15 @@ class Column implements \ArrayAccess{
         return $this->attributes["name"];
     }
 
-
+    /*
+        Getting Request Name
+    */
+    public function getRequestName(){
+        $more = $this->isRelationType()?"[]":"";
+        return isset($this->attributes["requestName"])?
+                $this->attributes["requestName"].$more:
+                $this->attributes["name"].$more;
+    }
 
     public function getRname(){
         if($this->isRelationType()){
@@ -68,17 +76,30 @@ class Column implements \ArrayAccess{
         return $this->attributes["type"];
     }
 
-    public function getUI($stage, $data){
+    public function getUI($stage, $data = null){
         //Load Custom
         $customView = $this->quickdata->file.".{$stage}.".$this->getName();
-        $relation = $this->getRelation()?$this->getRelation()->type.".":"normal.";
+        
+        $loadDefault = function($stage){
+            $relation = $this->getRelation()?$this->getRelation()->type:"";
+            $firstView = "quick::UI.normal.{$stage}.".$this->getType();
+            if($relation && view()->exists($firstView."_$relation")){
+                return $firstView."_$relation";
+            }
+            return $firstView;
+        };
         //Load Custom or General
-        $view = view()->exists($customView)?$customView:"quick::UI.{$relation}{$stage}.".$this->getType();
-        return view($view, ["data"=>$data, "column"=>$this, "quickdata"=>$this->quickdata]);
+        $view = view()->exists($customView)?$customView:$loadDefault($stage);
+        $all = ["column"=>$this, "quickdata"=>$this->quickdata];
+        if(is_array($data))
+            $all = array_merge($data,$all);
+        
+        return view($view, $all);
     }
 
     public function getValue($data, $isTarget=false){
         $callback = $this->setValue;
+        
         if(!$this->isRelationType())
             return $callback?$callback($data):$this->getValueUserable($data->{$this->name});
         if($isTarget)
@@ -88,10 +109,13 @@ class Column implements \ArrayAccess{
         if($relation instanceof \Illuminate\Database\Eloquent\Collection){
             return $callback?$callback($relation):$relation;
         }
-
-        return $callback?$callback($relation):(
-            ($this->getValueUserable($relation->{$this->getValueName()}))??""
-        );
+        if($callback){
+            return $callback($relation);
+        }
+        if($relation){
+            return $this->getValueUserable($relation->{$this->getValueName()});
+        }
+        return "";
     }
 
     public function isVisible($visible){
