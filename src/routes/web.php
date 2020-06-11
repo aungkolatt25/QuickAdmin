@@ -1,7 +1,6 @@
 <?php
 
-
-Route::group(["prefix"=>config("quick.prefix")], function(){
+Route::group(["prefix"=>config("quick.prefix"), 'middleware' => 'web'], function(){
     $methodCall = function($method, $parameters = array()){
         $controller = "Default";
         if(request()->segment("2")){
@@ -19,7 +18,7 @@ Route::group(["prefix"=>config("quick.prefix")], function(){
                 }
             }
         }
-
+        session(["test"=>"t"]);
         return App::call("$controller@$method", $params);
     };
     

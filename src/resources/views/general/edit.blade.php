@@ -16,7 +16,7 @@
         </div>
     </div>
 </form>
-
+@include("quick::general.component.errors")
 @endsection
 @push("script")
 

@@ -59,7 +59,7 @@
                         <div class="item-actions-block">
                             <ul class="item-actions-list">
                                 <li>
-                                    <a class="remove delete" href="#" data-toggle="modal" data-target="#confirm-modal" data-href="{{qurl($quickdata->file.'/delete/'.$data->id)}}";>
+                                    <a class="remove delete" href="#" data-toggle="modal" data-target="#confirm-modal" data-href="{{qurl($quickdata->file.'/delete/'.$data->getKey())}}";>
                                         <i class="fa fa-trash-o "></i>
                                     </a>
                                 </li>
@@ -92,3 +92,4 @@
         {{$datas->links()}}
     @endif
 </nav>
+@include("quick::general.component.delete-modal")

@@ -111,7 +111,10 @@ class QuickBuilder extends \App\Http\Controllers\Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, $this->createRule());
+        $validatedResult = $this->validateProcess($request, $this->createRule());
+        if($validatedResult !== true)
+            return $validatedResult;
+
         $columns = $this->quickdata->getVisibleColumns("create");
         foreach($columns as $column){
             if(
@@ -138,6 +141,14 @@ class QuickBuilder extends \App\Http\Controllers\Controller
             return back();
         }
         return redirect(qurl($this->quickdata->file));
+    }
+
+    private function validateProcess($request, $rules){
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) { 
+            return back()->withErrors($validator->errors())->withInput($request->all()); 
+        }
+        return true;
     }
 
     public function saveLogic($model){
@@ -244,7 +255,9 @@ class QuickBuilder extends \App\Http\Controllers\Controller
      */
     public function update(Request $request, $name, $id)
     {
-        $validator = Validator::make($request->all(), $this->editRule());
+        $validatedResult = $this->validateProcess($request, $this->editRule());
+        if($validatedResult !== true)
+            return $validatedResult;
         if ($validator->fails()) { return back()->withErrors($validator->errors()); }
         
         $columns = $this->quickdata->getVisibleColumns("edit");

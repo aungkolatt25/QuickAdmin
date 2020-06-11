@@ -144,7 +144,7 @@ class Column implements \ArrayAccess{
     }
 
     public function getRules($stage = ""){
-        $rules = $this->rules;
+        $rules = $this->rules??"";
         if($this->rules && is_array($this->rules)){
             $rules = $this[$stage]??"";
         }
