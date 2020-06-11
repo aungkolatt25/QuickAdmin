@@ -30,6 +30,15 @@ Route::group(["prefix"=>config("quick.prefix"), 'middleware' => 'web'], function
         return $methodCall("create");
     });
 
+
+    Route::get("/{everything}/create-many", function() use($methodCall) {
+        return $methodCall("createMany");
+    });
+
+    Route::post("/{everything}/create-many", function() use($methodCall) {
+        return $methodCall("storeMany");
+    });
+
     Route::post("/{everything}/create", function() use($methodCall) {
         return $methodCall("store");
     });

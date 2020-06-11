@@ -97,11 +97,42 @@ class QuickBuilder extends \App\Http\Controllers\Controller
     public function createRule(){
         $columns = $this->quickdata->getVisibleColumns("create");
         $rules = $columns->flatMap(function($column){
-            return [$column->getRequestName()=>$column->getRules("create")];
+            return [$column->getValidationRuleName()=>$column->getRules("create")];
         });
         
         return $rules->toArray();
     }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createMany()
+    {
+        //$builder = $this->getListData($request);
+        $quickdata = $this->quickdata;
+        $data = $this->model;
+        foreach($quickdata->getRelations() as $relation){
+            if($relation->type == "belongsTo"){
+                $data->{$relation->foreignKey} = request()->get($relation->foreignKey);
+            }
+        }
+        //$datas = $quickdata->isPaginate()?$builder->paginate():$builder->get();
+        $jsValidator = JsValidator::make($this->createManyRule());
+        return view("quick::general.create-many", compact( "quickdata","data", "jsValidator"));
+    }
+
+    
+    public function createManyRule(){
+        $columns = $this->quickdata->getVisibleColumns("create");
+        $rules = $columns->flatMap(function($column){
+            return [$column->getValidationRuleNameForMany()=>$column->getRules("create")];
+        });
+        
+        return $rules->toArray();
+    }
+
 
     /**
      * Store a newly created resource in storage.

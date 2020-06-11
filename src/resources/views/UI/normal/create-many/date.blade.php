@@ -1,0 +1,1 @@
+@include("quick::UI.normal.create-many.general")

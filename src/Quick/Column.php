@@ -51,6 +51,18 @@ class Column implements \ArrayAccess{
                 $this->attributes["name"].$more;
     }
 
+    public function getRequestNameForMany(){
+        return $this->getRequestName()."[]";
+    }
+
+    public function getValidationRuleName(){
+        return str_replace("[]",".*",$this->getRequestName());
+    }
+
+    public function getValidationRuleNameForMany(){
+        return str_replace("[]",".*",$this->getRequestNameForMany());
+    }
+
     public function getRname(){
         if($this->isRelationType()){
             if($this->getRelation()->type == "belongsToMany"){
