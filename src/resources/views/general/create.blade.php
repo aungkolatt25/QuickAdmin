@@ -17,3 +17,6 @@
     </div>
 </form>
 @endsection
+@push("script")
+{!! $jsValidator !!}
+@endpush

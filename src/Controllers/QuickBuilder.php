@@ -7,6 +7,8 @@ use Quick\Quick\QuickData;
 use Quick\Quick\QuickModel;
 use DB;
 use Arr;
+use JsValidator;
+use Validator;
 
 class QuickBuilder extends \App\Http\Controllers\Controller
 {
@@ -88,7 +90,17 @@ class QuickBuilder extends \App\Http\Controllers\Controller
             }
         }
         //$datas = $quickdata->isPaginate()?$builder->paginate():$builder->get();
-        return view("quick::general.create", compact( "quickdata","data"));
+        $jsValidator = JsValidator::make($this->createRule());
+        return view("quick::general.create", compact( "quickdata","data", "jsValidator"));
+    }
+
+    public function createRule(){
+        $columns = $this->quickdata->getVisibleColumns("create");
+        $rules = $columns->flatMap(function($column){
+            return [$column->getRequestName()=>$column->getRules("create")];
+        });
+        
+        return $rules->toArray();
     }
 
     /**
@@ -99,9 +111,7 @@ class QuickBuilder extends \App\Http\Controllers\Controller
      */
     public function store(Request $request)
     {
-        //Parent Relations
-        //Me...
-        //Child Relation
+        $this->validate($request, $this->createRule());
         $columns = $this->quickdata->getVisibleColumns("create");
         foreach($columns as $column){
             if(
@@ -220,8 +230,9 @@ class QuickBuilder extends \App\Http\Controllers\Controller
         //$builder = $this->getListData($request);
         $quickdata = $this->quickdata;
         $data = $this->model->find($id);
+        $jsValidator = JsValidator::make($this->editRule());
         //$datas = $quickdata->isPaginate()?$builder->paginate():$builder->get();
-        return view("quick::general.edit", compact( "quickdata", "data"));
+        return view("quick::general.edit", compact( "quickdata", "data","jsValidator"));
     }
 
     /**
@@ -233,6 +244,9 @@ class QuickBuilder extends \App\Http\Controllers\Controller
      */
     public function update(Request $request, $name, $id)
     {
+        $validator = Validator::make($request->all(), $this->editRule());
+        if ($validator->fails()) { return back()->withErrors($validator->errors()); }
+        
         $columns = $this->quickdata->getVisibleColumns("edit");
         $model = $this->model->find($id);
         foreach($columns as $column){
@@ -245,6 +259,15 @@ class QuickBuilder extends \App\Http\Controllers\Controller
         }
         $model->save();
         return redirect(qurl($this->quickdata->file));
+    }
+
+    public function editRule(){
+        $columns = $this->quickdata->getVisibleColumns("create");
+        $rules = $columns->flatMap(function($column){
+            return [$column->getRequestName()=>$column->getRules("create")];
+        });
+        
+        return $rules->toArray();
     }
 
     /**

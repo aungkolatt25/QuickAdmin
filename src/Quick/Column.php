@@ -142,4 +142,12 @@ class Column implements \ArrayAccess{
     public function bindSearchLogic($builder, $operator, $value){
         return $builder->where($this->getRname(),"like", "%$value%");
     }
+
+    public function getRules($stage = ""){
+        $rules = $this->rules;
+        if($this->rules && is_array($this->rules)){
+            $rules = $this[$stage]??"";
+        }
+        return is_array($rules)?$rules:$rules;
+    }
 }
