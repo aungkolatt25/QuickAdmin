@@ -11,6 +11,7 @@ class Column implements \ArrayAccess{
     private $quickdata;
     private $relation;
     private $attributes = [];
+    private $many = false;
 
     public function __construct($quickdata, $attributes, \Quick\Quick\Relation $relation = null){
         $this->quickdata = $quickdata;
@@ -49,6 +50,13 @@ class Column implements \ArrayAccess{
         return isset($this->attributes["requestName"])?
                 $this->attributes["requestName"].$more:
                 $this->attributes["name"].$more;
+    }
+
+    public function getRequestAcessName(){
+        if($this->many !== false){
+            return $this->getRequestName().".$this->many";
+        }
+        return $this->getRequestName();
     }
 
     public function getRequestNameForMany(){
@@ -144,7 +152,7 @@ class Column implements \ArrayAccess{
     }
     
     public function getValueAccessable(){
-        return request()->get($this->getName(), null);
+        return request($this->getRequestAcessName(), null);
     }
 
     public function getValueUserable($data){
@@ -161,5 +169,9 @@ class Column implements \ArrayAccess{
             $rules = $this[$stage]??"";
         }
         return is_array($rules)?$rules:$rules;
+    }
+
+    public function setManyIndex($index){
+        $this->many = $index;
     }
 }

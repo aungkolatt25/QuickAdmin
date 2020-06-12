@@ -2,17 +2,16 @@
 namespace Quick\Controllers\Traits;
 use DB;
 use Request;
+use JsValidator;
+use Arr;
 
 trait Create{
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Array
-     */
+    private $many = false;
+    
     public function createRule(){
         $columns = $this->quickdata->getVisibleColumns("create");
         $rules = $columns->flatMap(function($column){
-            return [$column->getRequestName()=>$column->getRules("create")];
+            return [$column->getValidationRuleName()=>$column->getRules("create")];
         });
         
         return $rules->toArray();
@@ -37,7 +36,7 @@ trait Create{
         $jsValidator = JsValidator::make($this->createRule());
         return view("quick::general.create", compact( "quickdata","data", "jsValidator"));
     }
-
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -46,24 +45,15 @@ trait Create{
      */
     public function store(Request $request)
     {
-        $validatedResult = $this->validateProcess($request, $this->createRule());
+        $validatedResult = $this->validateProcess(request(), $this->createRule());
         if($validatedResult !== true)
             return $validatedResult;
 
-        $columns = $this->quickdata->getVisibleColumns("create");
-        foreach($columns as $column){
-            if(
-                $column->isRelationType() && 
-                ( $column->getRelation()->type == "belongsTo" || $column->getRelation()->type == "belongsToMany")
-            )
-                continue;
-            if(Arr::get($column->options??[],"relatedDatas", false))
-                continue;
-            $requestValue = $column->getValueAccessable();
-            $this->model->{$column->getName()} = $requestValue;
-        }
+        
         DB::beginTransaction();
         try{
+            $columns = $this->assignableColumns("columns");
+            $this->prepareSave($this->model, $column);
             $this->beforeSave($this->model);
             $this->saveLogic($this->model);
             $this->prepareRelateionStore();
@@ -77,7 +67,6 @@ trait Create{
         }
         return redirect(qurl($this->quickdata->file));
     }
-
     public function saveLogic($model){
         return $this->model->save();
     }
@@ -130,6 +119,14 @@ trait Create{
         $relationObj->save($model, $relationdata);
     }
 
+    public function prepareSave($model, $columns){
+        foreach($columns as $column){
+            $column->setManyIndex($this->many);
+            $requestValue = $column->getValueAccessable();
+            $model->{$column->getName()} = $requestValue;
+        }
+    }
+
     public function beforeSave($model){
         return $model;
     }
@@ -145,22 +142,23 @@ trait Create{
     public function afterSaveRelated($model, $relation){
         return $model;
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Array
-     */
+  
     public function createManyRule(){
         $columns = $this->quickdata->getVisibleColumns("create");
         $rules = $columns->flatMap(function($column){
-            return [$column->getRequestName()=>$column->getRules("create")];
+            return [$column->getValidationRuleNameForMany()=>$column->getRules("create")];
         });
         
         return $rules->toArray();
     }
 
-    public function createMany(){
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createMany()
+    {
         //$builder = $this->getListData($request);
         $quickdata = $this->quickdata;
         $data = $this->model;
@@ -169,8 +167,44 @@ trait Create{
                 $data->{$relation->foreignKey} = request()->get($relation->foreignKey);
             }
         }
-        
+        //$datas = $quickdata->isPaginate()?$builder->paginate():$builder->get();
         $jsValidator = JsValidator::make($this->createManyRule());
-        return view("quick::general.create", compact( "quickdata","data", "jsValidator"));
+        return view("quick::general.create-many", compact( "quickdata","data", "jsValidator"));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeMany(Request $request)
+    {
+        $validatedResult = $this->validateProcess(request(), $this->createManyRule());
+        if($validatedResult !== true)
+            return $validatedResult;
+
+        DB::beginTransaction();
+        try{
+            $columns = $this->assignableColumns("create");
+            $length = count(request($columns->first()->getRequestName()));
+            for($i = 0; $i < $length; $i++){
+                $this->model = $this->quickdata->getModel();
+                $this->many = $i;
+                $this->prepareSave($this->model, $columns);
+                $this->beforeSave($this->model);
+                $this->saveLogic($this->model);
+                $this->prepareRelateionStore();
+                $this->afterSave($this->model);
+            }
+            DB::commit();
+        }
+        catch(\Exception $e){
+            DB::rollBack();
+            dd($e);
+            return back();
+        }
+        return redirect(qurl($this->quickdata->file));
+        
     }
 }

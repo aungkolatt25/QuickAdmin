@@ -2,6 +2,7 @@
 namespace Quick\Controllers\Traits;
 use Request;
 use DB;
+use JsValidator;
 
 trait Edit{
 
