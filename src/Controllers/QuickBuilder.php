@@ -133,6 +133,47 @@ class QuickBuilder extends \App\Http\Controllers\Controller
         return $rules->toArray();
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeMany(Request $request)
+    {
+        $validatedResult = $this->validateProcess($request, $this->createManyRule());
+        if($validatedResult !== true)
+            return $validatedResult;
+        /*
+        $columns = $this->quickdata->getVisibleColumns("create");
+        foreach($columns as $column){
+            if(
+                $column->isRelationType() && 
+                ( $column->getRelation()->type == "belongsTo" || $column->getRelation()->type == "belongsToMany")
+            )
+                continue;
+            if(Arr::get($column->options??[],"relatedDatas", false))
+                continue;
+            $requestValue = $column->getValueAccessable();
+            $this->model->{$column->getName()} = $requestValue;
+        }
+        DB::beginTransaction();
+        try{
+            $this->beforeSave($this->model);
+            $this->saveLogic($this->model);
+            $this->prepareRelateionStore();
+            $this->afterSave($this->model);
+            DB::commit();
+        }
+        catch(\Exception $e){
+            DB::rollBack();
+            dd($e);
+            return back();
+        }
+        return redirect(qurl($this->quickdata->file));
+        */
+    }
+
 
     /**
      * Store a newly created resource in storage.

@@ -1,6 +1,6 @@
 @extends("layout.master")
 @section("content")
-<form action="{{qurl($quickdata->file.'/create')}}" method="post">
+<form action="{{qurl($quickdata->file.'/create-many')}}" method="post">
 {{csrf_field()}}
     <div class="title-block">
         <h3 class="title">

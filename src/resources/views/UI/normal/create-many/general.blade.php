@@ -5,7 +5,7 @@
     @slot("input")
         @component(config("quick.template.form"))
             @slot("input")
-                <input type="{{$column->getInputType()}}" name="{{$column->getRequestNameForMany()}}" class="{{$column->getClass()}}" value="{{ old($column->getRequestName(),$column->getValue($data)) }}">
+                <input type="{{$column->getInputType()}}" name="{{$column->getRequestNameForMany()}}" class="{{$column->getClass()}}" value="{{ old($column->getRequestName().".$i",$column->getValue($data)) }}">
             @endslot
         @endcomponent
     @endslot
