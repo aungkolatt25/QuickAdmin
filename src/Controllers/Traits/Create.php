@@ -52,8 +52,8 @@ trait Create{
         
         DB::beginTransaction();
         try{
-            $columns = $this->assignableColumns("columns");
-            $this->prepareSave($this->model, $column);
+            $columns = $this->assignableColumns("create");
+            $this->prepareSave($this->model, $columns);
             $this->beforeSave($this->model);
             $this->saveLogic($this->model);
             $this->prepareRelateionStore();

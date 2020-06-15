@@ -90,7 +90,7 @@
 			<div class="col-md-6">
 				<h3 class="title">
                     {{qt($quickdata->getTitle())}}
-					<a href="{{$quickdata->getCreatedLink()}}" class="btn btn-primary btn-sm rounded-s">
+					<a href="{{$quickdata->getPageSettings()->getLink("create")}}" class="btn btn-primary btn-sm rounded-s">
 						Add New
 					</a>
 					<div class="action dropdown">
@@ -113,6 +113,7 @@
 	@include("quick::general/component/search")
 </div>
 {{QuickComponent($quickdata, "before_list")}}
-{{QuickComponent($quickdata, "list",compact("datas"))}}
+{{QuickComponent($quickdata, "list",compact("datas", "totalData"))}}
 {{QuickComponent($quickdata, "after_list")}}
+@include("quick::general.component.errors")
 @endsection

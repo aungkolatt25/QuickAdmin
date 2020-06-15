@@ -41,8 +41,9 @@ class QuickBuilder extends \App\Http\Controllers\Controller
     {
         $builder = $this->getListData($request);
         $quickdata = $this->quickdata;
+        $totalData = $this->getTotal($builder);
         $datas = $quickdata->isPaginate()?$builder->paginate():$builder->get();
-        return view("quick::general.list", compact("datas", "quickdata"));
+        return view("quick::general.list", compact("datas", "quickdata", "totalData"));
     }
 
     /**
@@ -54,8 +55,9 @@ class QuickBuilder extends \App\Http\Controllers\Controller
     {
         $builder = $this->buildSearch($this->getListData($request));
         $quickdata = $this->quickdata;
+        $totalData = $this->getTotal($builder);
         $datas = $quickdata->isPaginate()?$builder->paginate():$builder->get();
-        return view("quick::general.list", compact("datas", "quickdata"));
+        return view("quick::general.list", compact("datas", "quickdata", "totalData"));
     }
 
     /** 
@@ -77,6 +79,31 @@ class QuickBuilder extends \App\Http\Controllers\Controller
         }
         
         return $builder;
+    }
+
+    /**
+     * Get Total Data
+     */
+    public function getTotal($builder){
+        $totalBuilder = clone($builder);
+        foreach($this->quickdata->getVisibleColumns("list") as $column){
+            $callback = $column->total;
+            $name = $column->getName();
+
+            if(!($callback??true))
+                continue;
+                
+            if($callback){
+                $totalBuilder = $totalBuilder->addSelect(DB::raw($callback." as total_$name"));
+                continue;
+            }
+            
+            if($column->type == "integer" && !$column->isRelationType){
+                $totalBuilder = $totalBuilder->addSelect(DB::raw("sum($name) as total_".$name));
+            }
+        }
+        //dd($totalBuilder->toSql());
+        return $totalBuilder->first();
     }
 
     /** 
@@ -133,7 +160,7 @@ class QuickBuilder extends \App\Http\Controllers\Controller
                 $column->isRelationType() && 
                 ( $column->getRelation()->type == "belongsTo" || $column->getRelation()->type == "belongsToMany")
             )
-                return false;
+                return true;
             if(Arr::get($column->options??[],"relatedDatas", false))
                 return false;
             return true;

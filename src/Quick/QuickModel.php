@@ -12,10 +12,27 @@ class QuickModel extends Model
 
     public function __construct($arr = []){
         parent::__construct($arr);
+        /*
+        $quickdata = $this->getQuickData();
+        if($quickdata)
+            $this->makeModel(QuickData::getLoaded($quickdata));
+        */
+        $this->loadModelConfig();
+    }
+
+    public function getFileName(){
+        $data = "";
         if(session()->get("table", [])){
             $data = session()->get("table");
             session()->forget("table");
-            $this->makeModel(QuickData::getLoaded($data));
+        }
+        return $data;
+    }
+
+    private function loadModelConfig(){
+        $filename = $this->getFileName();
+        if($filename){
+            $this->makeModel(QuickData::get($filename));
         }
     }
     //
@@ -44,7 +61,7 @@ class QuickModel extends Model
     }
 
     public function getQuickData(){
-        $this->quickdata = $this->quickdata?$this->quickdata:QuickData::get($this->table);
+        $this->quickdata = $this->quickdata?$this->quickdata:QuickData::get($this->getFileName());
         return $this->quickdata;
     }
 
@@ -164,9 +181,14 @@ class QuickModel extends Model
 
     protected function newRelatedInstance($class)
     {
-        $relation = $this->getQuickData()->getRelation($class);
-        $relation_data = QuickData::get($relation->related);
-        $relation_model =  $relation_data->getModel();
-        return $relation_model;
+        try{
+            $relation = $this->getQuickData()->getRelation($class);
+            $relation_data = QuickData::get($relation->related);
+            $relation_model =  $relation_data->getModel();
+            return $relation_model;
+        }
+        catch(\Exception $e){
+            return parent::newRelatedInstance($class);
+        }
     }
 }

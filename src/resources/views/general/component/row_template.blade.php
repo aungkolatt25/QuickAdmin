@@ -1,9 +1,8 @@
-<div class="form-group row">
-    <label class="col-sm-2 form-control-label text-xs-right">
+<div class="form-group row {{$column->size($stage)}}">
+    <label class="{{$column->labelSize($stage)}} form-control-label text-xs-right">
         {{$label}}
     </label>
-    <div class="col-sm-10">
-            <!-- value -->
+    <div class="{{$column->inputSize($stage)}}">
         {{$input}}
         <div class="customername-error error-msg">
             

@@ -46,21 +46,23 @@ class Column implements \ArrayAccess{
         Getting Request Name
     */
     public function getRequestName(){
-        $more = $this->isRelationType()?"[]":"";
         return isset($this->attributes["requestName"])?
-                $this->attributes["requestName"].$more:
-                $this->attributes["name"].$more;
-    }
-
-    public function getRequestAcessName(){
-        if($this->many !== false){
-            return $this->getRequestName().".$this->many";
-        }
-        return $this->getRequestName();
+                $this->attributes["requestName"]:
+                $this->attributes["name"];
     }
 
     public function getRequestNameForMany(){
         return $this->getRequestName()."[]";
+    }
+
+    public function getRequestAcessName(){
+        $requestName = isset($this->attributes["requestName"])?
+                $this->attributes["requestName"]:
+                $this->attributes["name"];
+        if($this->many !== false){
+            return $requestName.".$this->many";
+        }
+        return $requestName;
     }
 
     public function getValidationRuleName(){
@@ -173,5 +175,26 @@ class Column implements \ArrayAccess{
 
     public function setManyIndex($index){
         $this->many = $index;
+    }
+
+    public function size($stage = ""){
+        $default = $this->quickdata->getPageSettings()->getControlSize($stage.".item");
+        if($stage)
+            return $this->sizes[$stage]["item"]??$default;
+        return $this->sizes["item"]??$default;
+    }
+
+    public function labelSize($stage = ""){
+        $default = $this->quickdata->getPageSettings()->getControlSize($stage.".label-size");
+        if($stage)
+            return $this->sizes[$stage]["label-size"]??$default;
+        return $this->sizes["label-size"]??$default;
+    }
+
+    public function inputSize($stage = ""){
+        $default = $this->quickdata->getPageSettings()->getControlSize($stage.".input-size");
+        if($stage)
+            return $this->sizes[$stage]["input-size"]??$default;
+        return $this->sizes["input-size"]??$default;
     }
 }

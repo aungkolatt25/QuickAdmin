@@ -81,6 +81,7 @@
             </div>
         </li>
         @endforeach
+        @include("quick::general.component.total")
 		<?php //endForEach;
 		//include __DIR__."/component/total.php";?>
 	</ul>

@@ -1,5 +1,8 @@
 @extends("layout.master")
 @section("content")
+@php
+$stage= "create";
+@endphp
 <form action="{{qurl($quickdata->file.'/create')}}" method="post">
 {{csrf_field()}}
     <div class="title-block">
@@ -8,7 +11,7 @@
                 </h3>
     </div>
     <div class="card card-block">
-        {{QuickComponent($quickdata, "create", compact("data"))}}
+        {{QuickComponent($quickdata, "create", compact("data", "stage"))}}
         <div class="form-group row">
             <div class="col-sm-10 col-sm-offset-2">
                 <input type="submit" value="Submit" lass="btn btn-primary">

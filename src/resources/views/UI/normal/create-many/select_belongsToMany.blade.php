@@ -1,5 +1,5 @@
 
-@component("quick::general.component.row_template", compact("column"))
+@component("quick::general.component.row_template", compact("column", "stage"))
     @slot("label")
         {{qt($column->displayName)}}
     @endslot

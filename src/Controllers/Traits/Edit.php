@@ -3,6 +3,7 @@ namespace Quick\Controllers\Traits;
 use Request;
 use DB;
 use JsValidator;
+use Arr;
 
 trait Edit{
 
@@ -31,10 +32,9 @@ trait Edit{
      */
     public function update(Request $request, $name, $id)
     {
-        $validatedResult = $this->validateProcess($request, $this->editRule());
+        $validatedResult = $this->validateProcess(request(), $this->editRule());
         if($validatedResult !== true)
             return $validatedResult;
-        if ($validator->fails()) { return back()->withErrors($validator->errors()); }
         
         $columns = $this->quickdata->getVisibleColumns("edit");
         $model = $this->model->find($id);

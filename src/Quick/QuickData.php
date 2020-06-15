@@ -83,10 +83,7 @@ class QuickData
     public function isTotal(){
         return $this->data->get("isTotal", false);
     }
-
-    public function getCreatedLink(){
-        return Arr::get($this->data,"links.create", qurl($this->file."/create"));
-    }
+    
     /*
 
     public function getLink($stage, $data = []){
@@ -131,10 +128,16 @@ class QuickData
             eval('$column = new \Quick\Quick\Type\\'.$value["type"].'($this, $value, $relation);');
             return $column;
         });
+
+        $this->data["pageSettings"] = new PageSettings($this->data["pageSettings"]??[]);
     }
 
     public function getBindedController(){
         return $this->data["controller"]??"\Quick\Controllers\QuickBuilder";
+    }
+
+    public function getPageSettings(){
+        return $this->data["pageSettings"];
     }
 }
 

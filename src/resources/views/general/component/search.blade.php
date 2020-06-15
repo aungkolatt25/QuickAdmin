@@ -21,14 +21,7 @@
                     <form action="{{qurl($quickdata->file.'/search')}}" method="get">
                         <div class="row">
                             @foreach($quickdata->getVisibleColumns("search") as $column)
-                            <div class="col-md-6">
-                                    <label class="text-xs-right">
-                                        {{qt($column->displayName)}}
-                                    </label>
-                                    <div class="form-group">
-                                        {{$column->getUI("search", null)}}
-                                    </div>
-                            </div>
+                                {{$column->getUI("search", null)}}
                             @endforeach
                         </div>
                         <div class="row">
