@@ -9,6 +9,7 @@
 		
 		<div class="item-col fixed pull-left item-col-title">
 		</div>
+		@if($totalData)
 		@foreach($quickdata->getVisibleColumns("list") as $column)
 			<div class="item-col fixed pull-left item-col-owner display-{{$column->type}}">
 				<div class="item-heading">{{qt($column->displayName)}}</div>
@@ -20,5 +21,6 @@
 			</div>
 			<td></td>
 		@endforeach
+		@endif
 	</div>
 </li>
