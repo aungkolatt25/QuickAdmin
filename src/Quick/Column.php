@@ -125,14 +125,14 @@ class Column implements \ArrayAccess{
         if(!$this->isRelationType())
             return $callback?$callback($data):$this->getValueUserable($data->{$this->name});
         if($isTarget)
-            return $callback?$callback($data):($this->getValueUserable($data->{$this->rname})??"");
+            return $callback?$callback($data, null):($this->getValueUserable($data->{$this->rname})??"");
         $relation = $data->relation($this->relation->id, $this->quickdata)->getResults();
 
         if($relation instanceof \Illuminate\Database\Eloquent\Collection){
-            return $callback?$callback($relation):$relation;
+            return $callback?$callback($relation, $data):$relation;
         }
         if($callback){
-            return $callback($relation);
+            return $callback($relation, $data);
         }
         if($relation){
             return $this->getValueUserable($relation->{$this->getValueName()});

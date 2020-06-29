@@ -5,7 +5,7 @@
     @slot("input")
         @component(config("quick.template.form"))
             @slot("input")
-            <select name="{{$column->getRequestName()}}" class="{{$column->getClass()}}">
+            <select name="{{$column->getRequestNameForMany()}}" class="{{$column->getClass()}}">
                 @foreach($column->getRelation()->getModel()->get() as $model)
                 <option value="{{ $model->{$column->rkey} }}">
                     {{ $column->getValue($model,true)}}

@@ -183,7 +183,6 @@ trait Create{
         $validatedResult = $this->validateProcess(request(), $this->createManyRule());
         if($validatedResult !== true)
             return $validatedResult;
-
         DB::beginTransaction();
         try{
             $columns = $this->assignableColumns("create");
