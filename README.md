@@ -18,7 +18,8 @@
         "sigular"=>"Person",
         "plupal"=>"People",
         /**option for extend action or override the default actions**/
-        "controller"=>"\App\Http\Controllers\Expense",
+        "controller"=>"\App\Http\Controllers\Person",
+        /**model settings**/
         "options"=>[
             "primaryKey"=>"PersonID",
             "timestamps"=>false
@@ -32,9 +33,13 @@
                 "options"=>""
             ],
             [
+                /**name must be same with database column name**/
                 "name"=>"name",
+                /**Show as**/
                 "displayName"=>"Name",
+                /**different type have diffent attribute**/
                 "type"=>"text",
+                /**visible control for stage**/
                 "visible"=>["list","create", "edit", "search"],
             ],
             [
@@ -50,9 +55,9 @@
         /**relation with current builder or one/many of current builder attributes**/
         "relations"=>[
             [
-                "id"=>"relLocation",
-                "type"=>"belongsTo",
-                "related"=>"location",
+                "id"=>"relLocation",/**relation unique name**/
+                "type"=>"belongsTo",/**relation type**/
+                "related"=>"location",/**relation to file**/
                 "localKey"=> "LocationID",
                 "foreignKey"=> "LocationID"
             ],
