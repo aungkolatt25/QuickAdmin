@@ -15,6 +15,8 @@
     getListData(Request $request) - Return Builder for listing data.
 
 # Default QuickBuilder Logic for create
+    <table><tr><td>Some</td></tr></table>
+    store(Request $request) - action for store data
     createRule() - Return rule for create from file.
     beforeSave($model) - to action on model before save
     saveLogic($model) - to save model logic
