@@ -5,7 +5,7 @@
     # Four Stage
         List, Create, Edit, Search
 
-# Builing Builder
+# Building Builder
     You can bind controller and model. You must be inherited from QuickBuilder and QuickModel.
     One Builder represents ListPage,CreatePage,EditPage.
     There is declare which column are included.
