@@ -9,6 +9,55 @@
     You can bind controller and model. You must be inherited from QuickBuilder and QuickModel.
     One Builder represents ListPage,CreatePage,EditPage.
     There is declare which column are included.
+    Builder File must be exist under app\Builder.
+    After Creation of Build, you can get simple 4stage(CRUD);
+    
+## Builder Format
+return [
+    "table"=>"expensedetails",
+    "sigular"=>"Expense",
+    "plupal"=>"Expense",
+    /**option for extend action or override the default actions**/
+    "controller"=>"\App\Http\Controllers\Expense",
+    "options"=>[
+        "primaryKey"=>"ExpenseDetailsID",
+        "timestamps"=>false
+    ],
+    "columns"=> [
+        [
+            "name"=>"PersonID",
+            "displayName"=>"Id",
+            "type"=>"integer",
+            "visible"=>[],
+            "options"=>""
+        ],
+        [
+            "name"=>"name",
+            "displayName"=>"Name",
+            "type"=>"text",
+            "visible"=>["list","create", "edit", "search"],
+        ],
+        [
+            "name"=>"location_id",
+            "rname"=>"Location",
+            "rkey"=>"LocationID",
+            "displayName"=>"Location",
+            "type"=>"select",
+            "relation"=>"relLocation",
+            "visible"=>["list","create", "edit", "search"],
+        ],
+    ],
+    /**relation with current builder or one/many of current builder attributes**/
+    "relations"=>[
+        [
+            "id"=>"relLocation",
+            "type"=>"belongsTo",
+            "related"=>"location",
+            "localKey"=> "LocationID",
+            "foreignKey"=> "LocationID"
+        ],
+    ]
+];
 
 # QuickBuilder Controller
     getFileName() - Loading Related File.Default load from route segment 2
