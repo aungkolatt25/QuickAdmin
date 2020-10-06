@@ -11,7 +11,7 @@
     There is declare which column are included.
     Builder File must be exist under app\Builder.
     After Creation of Build, you can get simple 4stage(CRUD);
-    see documentation [here](Builder.md)
+    see documentation [here](./Builder.md)
 # QuickBuilder Controller
     getFileName() - Loading Related File.Default load from route segment 2
     getListData(Request $request) - Return Builder for listing data.
