@@ -14,13 +14,13 @@
     
 ## Builder Format
     return [
-        "table"=>"expensedetails",
-        "sigular"=>"Expense",
-        "plupal"=>"Expense",
+        "table"=>"persons",
+        "sigular"=>"Person",
+        "plupal"=>"People",
         /**option for extend action or override the default actions**/
         "controller"=>"\App\Http\Controllers\Expense",
         "options"=>[
-            "primaryKey"=>"ExpenseDetailsID",
+            "primaryKey"=>"PersonID",
             "timestamps"=>false
         ],
         "columns"=> [
