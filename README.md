@@ -15,7 +15,11 @@
     getListData(Request $request) - Return Builder for listing data.
 
 # Default QuickBuilder Logic for create
-    <table><tr><td>Some</td></tr></table>
+    | Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
     store(Request $request) - action for store data
     createRule() - Return rule for create from file.
     beforeSave($model) - to action on model before save
