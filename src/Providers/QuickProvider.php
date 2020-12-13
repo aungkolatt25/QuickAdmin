@@ -23,12 +23,6 @@ class QuickProvider extends ServiceProvider
      */
     public function boot()
     {
-        $controller = "Default";
-        if(request()->segment("2")){
-            $quickdata = \Quick\Quick\QuickData::get(request()->segment("2"));
-            $controller = $quickdata->getBindedController();
-        }
-
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
         $this->loadTranslationsFrom(__DIR__.'/../translations', 'quick');

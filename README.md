@@ -5,13 +5,29 @@
     # Four Stage
         List, Create, Edit, Search
 
-# Builing Builder
+# Building Builder
     You can bind controller and model. You must be inherited from QuickBuilder and QuickModel.
     One Builder represents ListPage,CreatePage,EditPage.
-    There is declare which column are inclued.
+    There is declare which column are included.
+    Builder File must be exist under app\Builder.
+    After Creation of Build, you can get simple 4stage(CRUD);
+    see documentation [here](./Builder.md)
+# QuickBuilder Controller
+    getFileName() - Loading Related File.Default load from route segment 2
+    getListData(Request $request) - Return Builder for listing data.
 
 # Default QuickBuilder Logic for create
+    store(Request $request) - action for store data
+    createRule() - Return rule for create from file.
+    beforeSave($model) - to action on model before save
+    saveLogic($model) - to save model logic
+    prepareRelateionStore($relationObj, $currentModel, $relatedData) - Preparing for some relation data
+        beforeSaveRelated($relatedData, $currentModelId)
+        saveLogicRelated($relationObj, $currentModel, $relatedData)
+        afterSaveRelated($relatedData, $currentModelId)
+    afterSave($model)
 # Default QuickBuilder Logic for edit
+    editRule() - Return rule array from edit from file
 
 # Column
     name attribute for
