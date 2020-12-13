@@ -14,9 +14,10 @@ class date extends \Quick\Quick\Column{
     }
 
     public function getValueAccessable(){
-        if(request($this->getName()))
-            return Carbon::parse(request($this->getName()))->format("Y-m-d");
-        return request($this->getName());
+        $data = parent::getValueAccessable();
+        if(!$data)
+            return "";
+        return Carbon::parse($data)->format("Y-m-d");
     }
 
     public function getValueUserable($data){

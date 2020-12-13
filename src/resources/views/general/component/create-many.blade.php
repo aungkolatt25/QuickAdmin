@@ -40,5 +40,8 @@
         $(this).parent().parent().append($dom);
         $('.select2').select2();
     });
+    $("body").on("click", ".sub", function(){
+        $(this).parent().remove();
+    });
 </script>
 @endpush

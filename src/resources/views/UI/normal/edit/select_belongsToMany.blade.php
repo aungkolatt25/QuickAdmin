@@ -1,14 +1,12 @@
-@component("quick::general.component.row_template", ["column"=>$column, "stage"=>"search"])
+
+@component("quick::general.component.row_template", compact("column"))
     @slot("label")
         {{qt($column->displayName)}}
     @endslot
     @slot("input")
         @component(config("quick.template.form"))
             @slot("input")
-            <select name="{{$column->getRequestName()}}" class="{{$column->getClass()}}">
-                <option value="">
-                    {{qt("Select")}}
-                </option>
+            <select name="{{$column->getRequestName()}}" class="{{$column->getClass()}}" multiple>
                 @foreach($column->getRelation()->getModel()->get() as $model)
                 <option value="{{ $model->{$column->rkey} }}">
                     {{ $column->getValue($model,true)}}

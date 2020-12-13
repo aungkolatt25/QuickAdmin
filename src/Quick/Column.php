@@ -140,6 +140,10 @@ class Column implements \ArrayAccess{
         return "";
     }
 
+    public function getRequestValue(){
+        return request($this->getRequestAcessName());
+    }
+
     public function isVisible($visible){
         return collect(Arr::get($this->attributes, "visible",[]))->contains($visible);
     }
