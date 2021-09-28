@@ -4,6 +4,10 @@ use Quick\Quick\Traits\Attribute;
 use Quick\Quick\Traits\ArrayImplement;
 use Quick\Quick\QuickData;
 
+/**
+ * Relation
+ * To represent the relation on column
+ */
 class Relation implements \ArrayAccess{
     use Attribute;
     use ArrayImplement;
@@ -14,15 +18,28 @@ class Relation implements \ArrayAccess{
     {
         $this->attributes = $attributes;
     }
-
+    
+    /**
+     * accessing attribute value as object's attribute
+     */
     public function __get($attribute){
         return $this->getAttribute($attribute);
     }
 
+    /**
+     * Get Related Model
+     * @return Model
+     */
     public function getModel(){
         return QuickData::get($this->related)->getModel();
     }
 
+    /**
+     * Saving Logic depends on Type
+     * @param Model $model
+     * @param mix $mix
+     * @return mix
+     */
     public function save($model, $mix){
         switch($this->type){
             case "hasOne":

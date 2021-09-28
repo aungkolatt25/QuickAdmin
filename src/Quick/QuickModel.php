@@ -4,7 +4,8 @@ namespace Quick\Quick;
 
 use Illuminate\Database\Eloquent\Model;
 use Quick\Quick\QuickData;
-use Arr;
+use Illuminate\Support\Arr;
+use stdClass;
 
 class QuickModel extends Model
 {
@@ -20,6 +21,10 @@ class QuickModel extends Model
         $this->loadModelConfig();
     }
 
+    /**
+     * Get File Name to build the model
+     * @return string
+     */
     public function getFileName(){
         $data = "";
         if(session()->get("table", [])){
@@ -29,16 +34,28 @@ class QuickModel extends Model
         return $data;
     }
 
+    /**
+     * Load Model Config from quick filename
+     */
     private function loadModelConfig(){
         $filename = $this->getFileName();
         if($filename){
             $this->makeModel(QuickData::get($filename));
         }
     }
-    //
+    
+    /**
+     * make QuickModel using QuickData
+     * @param QuickData $data
+     * @return QuickModel
+     */
     public static function make(QuickData $data){
         $modelName = Arr::get($data->getData(),"model","\Quick\Quick\QuickModel()");
         try{
+            /**
+             * @var QuickModel
+             */
+            $model = null;
             eval('$model = new '.$modelName.';');
             $model->makeModel($data);
         }
@@ -48,6 +65,11 @@ class QuickModel extends Model
         return $model;
     }
 
+    /**
+     * make QuickModel using QuickData
+     * @param QuickData $data
+     * @return QuickModel
+     */
     public function makeModel(QuickData $data){
         $this->quickdata = $data;
         $this->table = $data->getTable();
@@ -60,11 +82,19 @@ class QuickModel extends Model
         }
     }
 
+    /**
+     * get QuickData
+     * @return QuickData
+     */
     public function getQuickData(){
         $this->quickdata = $this->quickdata?$this->quickdata:QuickData::get($this->getFileName());
         return $this->quickdata;
     }
 
+    /**
+     * Get Quick Query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function getQuickQuery(){
         session()->forget("table");
         session()->put("table", $this->getQuickData()->getData());
@@ -72,6 +102,10 @@ class QuickModel extends Model
         return $builder;
     }
 
+    /**
+     * Get Related Model
+     * @return Illuminate\Database\Eloquent\Relations\Relation
+     */
     public function relation($relationid, QuickData $quickdata = null){
         $relation = $this->getQuickData()->getRelation($relationid);
         $relation_data = QuickData::get($relation->related);
@@ -97,21 +131,33 @@ class QuickModel extends Model
         }
     }
 
+    /**
+     * Get Qucik Foreign Key
+     * @return string
+     */
     public function getQuickForeignKey()
     {
         return $this->getTable().'_'.$this->getKeyName();
     }
 
+    /**
+     * Join with related tableå
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function joined($builder, $column){
         static $joined = [];
-        //If Not joined,Join
+        //if already joined
         if(isset($joined[$column["relation"]]))
-            return $joined[$column["$relation"]];
+            return $joined[$column["relation"]];
 
+        /**
+         * get related model and relation config
+         */
         $relationModel = $this->relation($column["relation"])->getRelated();
         $relationTable = $relationModel->getTable();
         $relation_config = $column->getRelation();
 
+        /**Join */
         return $builder->leftjoin(
             $relationModel->getTable(), 
             $relationModel->getTable().".".Arr::get($relation_config, "foreignKey", $this->getQuickForeignKey()),

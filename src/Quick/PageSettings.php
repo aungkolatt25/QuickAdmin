@@ -2,7 +2,7 @@
 namespace Quick\Quick;
 use Quick\Quick\Traits\Attribute;
 use Quick\Quick\Traits\ArrayImplement;
-use Arr;
+use Illuminate\Support\Arr;
 
 class PageSettings implements \ArrayAccess{
     use Attribute;
@@ -18,10 +18,18 @@ class PageSettings implements \ArrayAccess{
         $default = $this->getDefaultSettings();
         $this->settings = $this->bindWithDefaultSettings($default, $settings);
     }
-
+    /**
+     * Bind with Default Settings
+     * @param array $default
+     * @param array $settings
+     * @return array
+     */
     private function bindWithDefaultSettings($default, $settings){
         if($settings)
             foreach($default as $key => $value){
+                /**
+                 * If it is array, do the same task
+                 */
                 if(($settings[$key]??false) && is_array($settings[$key])){
                     $default[$key] = $this->bindWithDefaultSettings($default[$key], $settings[$key]);
                 }
@@ -32,7 +40,11 @@ class PageSettings implements \ArrayAccess{
         return $default;
     }
 
-    public function getDefaultSettings(){
+    /**
+     * get default settings
+     * @return string
+     */
+    private function getDefaultSettings(){
         return [
             "links"=>[
                 "create"=>qurl(request()->segment(2)."/create")
@@ -62,10 +74,18 @@ class PageSettings implements \ArrayAccess{
         ];
     }
 
+    /**
+     * get control size
+     * @return string
+     */
     public function getControlSize($index){
         return Arr::get($this->settings, "controlSize.".$index);
     }
 
+    /**
+     * get url
+     * @return string
+     */
     public function getLink($url){
         return Arr::get($this->settings, "links.".$url);
     }
